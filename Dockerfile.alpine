@@ -1,0 +1,17 @@
+FROM alpine
+RUN apk update
+RUN apk add curl docker
+RUN mkdir /docker
+
+COPY bin/docker /docker/
+
+COPY bin/docker-containerd /docker/
+COPY bin/docker-containerd-ctr /docker/
+COPY bin/docker-containerd-shim /docker/
+COPY bin/dockerd /docker/
+COPY bin/docker-runc /docker/
+
+ENV PATH=/docker:$PATH
+
+ENTRYPOINT [ "/docker/dockerd" ]
+CMD [ "-H", "0.0.0.0:2375", "-H", "unix:///var/run/docker.sock" ]
